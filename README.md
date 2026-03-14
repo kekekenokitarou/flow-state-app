@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a Next.js (App Router) + Hono project.
+
+## Stack
+
+- Next.js (App Router)
+- Hono (mounted under `app/api/[[...route]]/route.ts`)
+- Type-safe RPC client via `hono/client` (`hc<AppType>()`)
+
+See `STRUCTURE.md` for the recommended layering and directory structure.
 
 ## Getting Started
 
@@ -17,6 +25,11 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+## API
+
+- `GET /api/hello`
+- Client example: `src/lib/api/client.ts` (`apiClient.hello.$get()`)
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 

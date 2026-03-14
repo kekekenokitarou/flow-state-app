@@ -12,15 +12,33 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Flame wobble animation */
+@keyframes flameWave {
+  0%   { transform: scaleX(1)    scaleY(1)    rotate(-1deg); }
+  20%  { transform: scaleX(0.95) scaleY(1.04) rotate(1.5deg); }
+  40%  { transform: scaleX(1.04) scaleY(0.97) rotate(-2deg); }
+  60%  { transform: scaleX(0.97) scaleY(1.05) rotate(1deg); }
+  80%  { transform: scaleX(1.03) scaleY(0.98) rotate(-1.5deg); }
+  100% { transform: scaleX(1)    scaleY(1)    rotate(-1deg); }
+}
+
+.animate-flame {
+  animation: flameWave 0.9s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* Radial glow that pulses behind the flame in flow state */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50%       { opacity: 0.7;  transform: scale(1.08); }
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2.4s ease-in-out infinite;
 }
