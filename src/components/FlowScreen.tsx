@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FlameButton } from "@/components/FlameButton";
 import { ProfileCard } from "@/components/ProfileCard";
+import { LogoutButton } from "@/components/LogoutButton";
 import { useFlowState } from "@/hooks/useFlowState";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +19,7 @@ export function FlowScreen({ message }: FlowScreenProps) {
       className={cn(
         "relative flex min-h-screen items-center justify-center overflow-hidden",
         "transition-colors duration-700",
-        isFlow ? "bg-[#0a0a0a]" : "bg-white"
+        isFlow ? "bg-neutral-950" : "bg-white"
       )}
     >
       {/* Radial glow backdrop — flow state only */}
@@ -32,13 +33,14 @@ export function FlowScreen({ message }: FlowScreenProps) {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="pointer-events-none absolute inset-0 flex items-center justify-center"
           >
-            <div className="animate-glow-pulse h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(251,100,0,0.18)_0%,transparent_70%)]" />
+            <div className="animate-glow-pulse h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle,rgba(23, 22, 21, 0.18)_0%,transparent_70%)]" />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Profile — top right */}
-      <div className="absolute top-5 right-5 z-10">
+      {/* Profile & Logout — top right */}
+      <div className="absolute top-5 right-5 z-10 flex items-center gap-3">
+        <LogoutButton isFlow={isFlow} />
         <ProfileCard isFlow={isFlow} name="Keisuke" initial="K" />
       </div>
 
