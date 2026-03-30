@@ -10,3 +10,12 @@
 - Hono (type-safe RPC)
 - Framer Motion
 - Tailwind CSS v4
+
+## Todo
+
+-  Google login
+-  ランキング
+-  ~日連続
+-  snsシェア
+-  ログインに基づいて、右上のプロフィールカードを表示
+-  ログアウト実装
