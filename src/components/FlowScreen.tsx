@@ -8,10 +8,11 @@ import { useFlowState } from "@/hooks/useFlowState";
 import { cn } from "@/lib/utils";
 
 interface FlowScreenProps {
-  message: string;
+  name: string;
+  initial: string;
 }
 
-export function FlowScreen({ message }: FlowScreenProps) {
+export function FlowScreen({ name, initial }: FlowScreenProps) {
   const { isFlow, toggle } = useFlowState();
 
   return (
@@ -41,24 +42,11 @@ export function FlowScreen({ message }: FlowScreenProps) {
       {/* Profile & Logout — top right */}
       <div className="absolute top-5 right-5 z-10 flex items-center gap-3">
         <LogoutButton isFlow={isFlow} />
-        <ProfileCard isFlow={isFlow} name="Keisuke" initial="K" />
+        <ProfileCard isFlow={isFlow} name={name} initial={initial} />
       </div>
 
       {/* Flame button — center */}
       <FlameButton isFlow={isFlow} onClick={toggle} />
-
-      {/* API message */}
-      <div
-        className={cn(
-          "absolute bottom-6 left-6 rounded-xl px-3 py-2 text-xs",
-          "border backdrop-blur transition-colors duration-700",
-          isFlow
-            ? "border-white/10 bg-white/5 text-zinc-200"
-            : "border-zinc-200 bg-white text-zinc-700"
-        )}
-      >
-        API: {message}
-      </div>
 
       {/* Subtle vignette in flow state */}
       <AnimatePresence>

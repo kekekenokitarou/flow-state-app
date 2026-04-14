@@ -5,7 +5,8 @@ interface ErrorPageProps {
   reset: () => void;
 }
 
-export default function ErrorPage({ error: _error, reset }: ErrorPageProps) {
+export default function ErrorPage({ error, reset }: ErrorPageProps) {
+  console.error("[ErrorPage]", error)
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white">
       <p className="text-sm text-zinc-500">Something went wrong.</p>
