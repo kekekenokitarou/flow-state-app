@@ -27,7 +27,7 @@ export async function updateAvatar(formData: FormData) {
   const file = formData.get("avatar") as File | null
   if (!file) throw new Error("ファイルが選択されていません")
   if (!file.type.startsWith("image/")) throw new Error("画像ファイルを選択してください")
-  if (file.size > 2 * 1024 * 1024) throw new Error("2MB以下の画像を選択してください")
+  if (file.size > 5 * 1024 * 1024) throw new Error("5MB以下の画像を選択してください")
 
   const ext = file.name.split(".").pop()
   const filename = `avatars/${session.user.email}-${Date.now()}.${ext}`

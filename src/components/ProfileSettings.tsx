@@ -119,7 +119,7 @@ export function ProfileSettings({ isFlow }: ProfileSettingsProps) {
         >
           {isPending ? "アップロード中..." : "画像を選択"}
         </button>
-        <p className={cn("text-xs", subText)}>JPG / PNG / WebP・2MB以下</p>
+        <p className={cn("text-xs", subText)}>JPG / PNG / WebP・5MB以下</p>
         {avatarError && <p className="text-xs text-red-400">{avatarError}</p>}
         {avatarDone && <p className="text-xs text-green-400">更新しました</p>}
       </div>

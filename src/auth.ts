@@ -21,8 +21,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           await prisma.user.update({
             where: { email: user.email },
             data: {
-              displayName: user.name ?? null,
-              avatarUrl: user.image ?? null,
+              displayName: existing.displayName ?? user.name ?? null,
+              avatarUrl: existing.avatarUrl ?? user.image ?? null,
               updatedAt: new Date(),
             },
           })
