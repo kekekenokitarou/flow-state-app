@@ -4,15 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FlameButton } from "@/components/FlameButton";
 import { ProfileCard } from "@/components/ProfileCard";
 import { LogoutButton } from "@/components/LogoutButton";
+import { HamburgerMenu } from "@/components/HamburgerMenu";
 import { useFlowState } from "@/hooks/useFlowState";
 import { cn } from "@/lib/utils";
 
 interface FlowScreenProps {
   name: string;
   initial: string;
+  image: string | null;
 }
 
-export function FlowScreen({ name, initial }: FlowScreenProps) {
+export function FlowScreen({ name, initial, image }: FlowScreenProps) {
   const { isFlow, toggle } = useFlowState();
 
   return (
@@ -39,10 +41,15 @@ export function FlowScreen({ name, initial }: FlowScreenProps) {
         )}
       </AnimatePresence>
 
+      {/* Hamburger menu — top left */}
+      <div className="absolute top-5 left-5 z-10">
+        <HamburgerMenu isFlow={isFlow} />
+      </div>
+
       {/* Profile & Logout — top right */}
       <div className="absolute top-5 right-5 z-10 flex items-center gap-3">
         <LogoutButton isFlow={isFlow} />
-        <ProfileCard isFlow={isFlow} name={name} initial={initial} />
+        <ProfileCard isFlow={isFlow} name={name} initial={initial} image={image} />
       </div>
 
       {/* Flame button — center */}

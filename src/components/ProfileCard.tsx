@@ -8,9 +8,10 @@ interface ProfileCardProps {
   isFlow: boolean;
   name: string;
   initial: string;
+  image: string | null;
 }
 
-export function ProfileCard({ isFlow, name, initial }: ProfileCardProps) {
+export function ProfileCard({ isFlow, name, initial, image }: ProfileCardProps) {
   return (
     <motion.div
       layout
@@ -23,17 +24,31 @@ export function ProfileCard({ isFlow, name, initial }: ProfileCardProps) {
       )}
     >
       {/* Avatar */}
-      <div
-        className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-full",
-          "text-sm font-bold transition-colors duration-700",
-          isFlow
-            ? "bg-orange-500/20 text-orange-300 ring-1 ring-orange-500/30"
-            : "bg-zinc-100 text-zinc-500 ring-1 ring-zinc-200"
-        )}
-      >
-        {initial}
-      </div>
+      {image ? (
+        <img
+          src={image}
+          alt={name}
+          className={cn(
+            "h-9 w-9 rounded-full object-cover transition-all duration-700",
+            isFlow
+              ? "ring-1 ring-orange-500/30"
+              : "ring-1 ring-zinc-200"
+          )}
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <div
+          className={cn(
+            "flex h-9 w-9 items-center justify-center rounded-full",
+            "text-sm font-bold transition-colors duration-700",
+            isFlow
+              ? "bg-orange-500/20 text-orange-300 ring-1 ring-orange-500/30"
+              : "bg-zinc-100 text-zinc-500 ring-1 ring-zinc-200"
+          )}
+        >
+          {initial}
+        </div>
+      )}
 
       {/* Text */}
       <div className="flex flex-col leading-tight">
