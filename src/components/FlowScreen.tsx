@@ -1,11 +1,13 @@
 "use client";
 
+import { useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FlameButton } from "@/components/FlameButton";
 import { ProfileCard } from "@/components/ProfileCard";
 import { LogoutButton } from "@/components/LogoutButton";
 import { HamburgerMenu } from "@/components/HamburgerMenu";
 import { useFlowState } from "@/hooks/useFlowState";
+import { MusicProvider, useMusicContext } from "@/contexts/MusicContext";
 import { cn } from "@/lib/utils";
 
 interface FlowScreenProps {
@@ -14,8 +16,18 @@ interface FlowScreenProps {
   image: string | null;
 }
 
-export function FlowScreen({ name, initial, image }: FlowScreenProps) {
+function FlowScreenInner({ name, initial, image }: FlowScreenProps) {
   const { isFlow, toggle } = useFlowState();
+  const { startFlowMusic, stopFlowMusic } = useMusicContext();
+
+  const handleToggle = useCallback(() => {
+    toggle();
+    if (!isFlow) {
+      startFlowMusic();
+    } else {
+      stopFlowMusic();
+    }
+  }, [toggle, isFlow, startFlowMusic, stopFlowMusic]);
 
   return (
     <div
@@ -41,10 +53,12 @@ export function FlowScreen({ name, initial, image }: FlowScreenProps) {
         )}
       </AnimatePresence>
 
-      {/* Hamburger menu — top left */}
-      <div className="absolute top-5 left-5 z-10">
-        <HamburgerMenu isFlow={isFlow} />
-      </div>
+      {/* Hamburger menu — top left, hidden in flow state */}
+      {!isFlow && (
+        <div className="absolute top-5 left-5 z-10">
+          <HamburgerMenu isFlow={isFlow} />
+        </div>
+      )}
 
       {/* Profile & Logout — top right */}
       <div className="absolute top-5 right-5 z-10 flex items-center gap-3">
@@ -53,7 +67,7 @@ export function FlowScreen({ name, initial, image }: FlowScreenProps) {
       </div>
 
       {/* Flame button — center */}
-      <FlameButton isFlow={isFlow} onClick={toggle} />
+      <FlameButton isFlow={isFlow} onClick={handleToggle} />
 
       {/* Subtle vignette in flow state */}
       <AnimatePresence>
@@ -69,5 +83,13 @@ export function FlowScreen({ name, initial, image }: FlowScreenProps) {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export function FlowScreen(props: FlowScreenProps) {
+  return (
+    <MusicProvider>
+      <FlowScreenInner {...props} />
+    </MusicProvider>
   );
 }

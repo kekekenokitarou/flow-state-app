@@ -4,16 +4,19 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ProfileSettings } from "@/components/ProfileSettings";
+import { RecordsPanel } from "@/components/RecordsPanel";
+import { MusicSettings } from "@/components/MusicSettings";
 
 interface HamburgerMenuProps {
   isFlow: boolean;
 }
 
-type MenuPage = "top" | "profile";
+type MenuPage = "top" | "profile" | "records" | "music";
 
 const NAV_ITEMS = [
+  { id: "records" as MenuPage, label: "記録", icon: "📊" },
+  { id: "music" as MenuPage, label: "音楽設定", icon: "🎵" },
   { id: "profile" as MenuPage, label: "プロフィール設定", icon: "👤" },
-  // ここに今後の機能を追加していく
 ];
 
 export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
@@ -157,7 +160,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
                       </button>
                     ))}
                   </motion.nav>
-                ) : (
+                ) : page === "profile" ? (
                   <motion.div
                     key="profile-settings"
                     initial={{ opacity: 0, x: 16 }}
@@ -166,6 +169,26 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
                     transition={{ duration: 0.15 }}
                   >
                     <ProfileSettings isFlow={isFlow} />
+                  </motion.div>
+                ) : page === "music" ? (
+                  <motion.div
+                    key="music-settings"
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 16 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <MusicSettings isFlow={isFlow} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="records"
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 16 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <RecordsPanel isFlow={isFlow} />
                   </motion.div>
                 )}
               </AnimatePresence>
