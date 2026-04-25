@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FlameButton } from "@/components/FlameButton";
 import { ProfileCard } from "@/components/ProfileCard";
@@ -18,10 +18,14 @@ interface FlowScreenProps {
 
 function FlowScreenInner({ name, initial, image }: FlowScreenProps) {
   const { isFlow, toggle } = useFlowState();
-  const { startFlowMusic, stopFlowMusic } = useMusicContext();
+  const { init, startFlowMusic, stopFlowMusic } = useMusicContext();
+
+  useEffect(() => {
+    init();
+  }, [init]);
 
   const handleToggle = useCallback(() => {
-    toggle();
+    if (!toggle()) return;
     if (!isFlow) {
       startFlowMusic();
     } else {

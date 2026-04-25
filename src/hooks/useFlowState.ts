@@ -5,7 +5,7 @@ const COOLDOWN_MS = 3000
 
 interface UseFlowStateReturn {
   isFlow: boolean;
-  toggle: () => void;
+  toggle: () => boolean;
   activate: () => void;
   deactivate: () => void;
 }
@@ -18,7 +18,7 @@ export function useFlowState(): UseFlowStateReturn {
   const toggle = useCallback(() => {
     const now = Date.now();
 
-    if (now - lastToggleRef.current < COOLDOWN_MS) return;
+    if (now - lastToggleRef.current < COOLDOWN_MS) return false;
     lastToggleRef.current = now;
 
     setIsFlow((v) => {
@@ -33,6 +33,7 @@ export function useFlowState(): UseFlowStateReturn {
       }
       return !v;
     });
+    return true;
   }, []);
 
   const activate = useCallback(() => setIsFlow(true), []);

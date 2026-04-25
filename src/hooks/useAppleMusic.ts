@@ -64,6 +64,7 @@ export function useAppleMusic(): UseAppleMusicReturn {
   const [libraryPlaylists, setLibraryPlaylists] = useState<LibraryPlaylist[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [queuedPlaylistId, setQueuedPlaylistId] = useState<string | null>(null);
 
   useEffect(() => {
     setSettings(loadSettings());
@@ -165,19 +166,36 @@ export function useAppleMusic(): UseAppleMusicReturn {
     });
   }, []);
 
+  useEffect(() => {
+    const playlistId = settings.activePlaylistId;
+    if (!playlistId || playlistId === queuedPlaylistId) return;
+    if (typeof window === "undefined" || !window.MusicKit) return;
+    const music = window.MusicKit.getInstance();
+    if (!music?.isAuthorized) return;
+    music.shuffleMode = window.MusicKit.PlayerShuffleMode.songs;
+    music.setQueue({ playlist: playlistId }).then(() => {
+      setQueuedPlaylistId(playlistId);
+    }).catch(() => {});
+  }, [settings.activePlaylistId, queuedPlaylistId, status]);
+
   const startFlowMusic = useCallback(async () => {
     if (!settings.enabled || !settings.activePlaylistId) return;
     if (typeof window === "undefined" || !window.MusicKit) return;
     try {
       const music = window.MusicKit.getInstance();
       if (!music.isAuthorized) return;
-      await music.setQueue({ playlist: settings.activePlaylistId });
+      if (queuedPlaylistId !== settings.activePlaylistId) {
+        await music.stop();
+        music.shuffleMode = window.MusicKit.PlayerShuffleMode.songs;
+        await music.setQueue({ playlist: settings.activePlaylistId });
+        setQueuedPlaylistId(settings.activePlaylistId);
+      }
       await music.play();
       setIsPlaying(true);
     } catch (err) {
       console.error("Failed to start music", err);
     }
-  }, [settings.enabled, settings.activePlaylistId]);
+  }, [settings.enabled, settings.activePlaylistId, queuedPlaylistId]);
 
   const stopFlowMusic = useCallback(async () => {
     if (!isPlaying) return;
