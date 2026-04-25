@@ -1,6 +1,13 @@
 declare namespace MusicKit {
+  enum PlayerShuffleMode {
+    off = 0,
+    songs = 1,
+  }
+
   interface MusicKitInstance {
     isAuthorized: boolean;
+    musicUserToken: string | null;
+    shuffleMode: PlayerShuffleMode;
     authorize(): Promise<string>;
     unauthorize(): Promise<void>;
     setQueue(options: QueueOptions): Promise<void>;

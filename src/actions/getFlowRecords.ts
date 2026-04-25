@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { HEATMAP_DAYS, RECENT_RECORDS_LIMIT } from "@/constants/app"
 
 export interface FlowRecord {
   id: string
@@ -43,15 +44,14 @@ export async function getFlowRecords(): Promise<FlowRecordsData> {
   const weekStart = new Date(todayStart)
   weekStart.setDate(todayStart.getDate() - todayStart.getDay())
 
-  // Heatmap: past 14 weeks (98 days)
   const heatmapStart = new Date(todayStart)
-  heatmapStart.setDate(todayStart.getDate() - 97)
+  heatmapStart.setDate(todayStart.getDate() - (HEATMAP_DAYS - 1))
 
   const [records, todayAgg, weekAgg, totalAgg, heatmapRecords] = await Promise.all([
     prisma.dailyWork.findMany({
       where: { userId: user.id },
       orderBy: { date: "desc" },
-      take: 30,
+      take: RECENT_RECORDS_LIMIT,
       select: { id: true, date: true, duration: true },
     }),
     prisma.dailyWork.aggregate({
@@ -72,13 +72,6 @@ export async function getFlowRecords(): Promise<FlowRecordsData> {
     }),
   ])
 
-  // Aggregate heatmap records by local date
-  const dayMap = new Map<string, number>()
-  for (const r of heatmapRecords) {
-    const key = toLocalDateKey(r.date)
-    dayMap.set(key, (dayMap.get(key) ?? 0) + r.duration)
-  }
-
   return {
     todaySeconds: todayAgg._sum.duration ?? 0,
     weekSeconds: weekAgg._sum.duration ?? 0,
@@ -88,6 +81,9 @@ export async function getFlowRecords(): Promise<FlowRecordsData> {
       date: r.date.toISOString(),
       duration: r.duration,
     })),
-    heatmap: Array.from(dayMap.entries()).map(([date, seconds]) => ({ date, seconds })),
+    heatmap: heatmapRecords.map((r) => ({
+      date: toLocalDateKey(r.date),
+      seconds: r.duration,
+    })),
   }
 }

@@ -24,6 +24,8 @@ model DailyWork {
   date     DateTime @db.Date
   duration Int
   User     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
 }
 
 model User {

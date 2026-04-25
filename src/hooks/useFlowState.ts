@@ -1,7 +1,6 @@
 import { useState, useCallback, useRef } from "react";
 import { saveFlowSession } from "@/actions/saveFlowSession";
-
-const COOLDOWN_MS = 3000
+import { FLOW_COOLDOWN_MS } from "@/constants/app";
 
 interface UseFlowStateReturn {
   isFlow: boolean;
@@ -18,7 +17,7 @@ export function useFlowState(): UseFlowStateReturn {
   const toggle = useCallback(() => {
     const now = Date.now();
 
-    if (now - lastToggleRef.current < COOLDOWN_MS) return false;
+    if (now - lastToggleRef.current < FLOW_COOLDOWN_MS) return false;
     lastToggleRef.current = now;
 
     setIsFlow((v) => {

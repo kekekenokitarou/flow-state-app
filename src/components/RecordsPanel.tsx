@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { getFlowRecords, type FlowRecordsData, type HeatmapDay } from "@/actions/getFlowRecords";
+import { HEATMAP_LEVEL_THRESHOLDS } from "@/constants/app";
 
 interface RecordsPanelProps {
   isFlow: boolean;
@@ -34,9 +35,9 @@ const DAYS_JP = ["日", "月", "火", "水", "木", "金", "土"] as const;
 
 function getLevel(seconds: number): 0 | 1 | 2 | 3 | 4 {
   if (seconds === 0) return 0;
-  if (seconds < 30 * 60) return 1;
-  if (seconds < 60 * 60) return 2;
-  if (seconds < 120 * 60) return 3;
+  if (seconds < HEATMAP_LEVEL_THRESHOLDS.LOW) return 1;
+  if (seconds < HEATMAP_LEVEL_THRESHOLDS.MEDIUM) return 2;
+  if (seconds < HEATMAP_LEVEL_THRESHOLDS.HIGH) return 3;
   return 4;
 }
 

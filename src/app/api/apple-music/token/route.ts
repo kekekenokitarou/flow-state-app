@@ -1,6 +1,11 @@
+import { auth } from "@/auth";
 import { generateAppleMusicToken } from "@/lib/appleMusicToken";
 
 export async function GET() {
+  const session = await auth();
+  if (!session?.user) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
   try {
     const token = generateAppleMusicToken();
     return Response.json({ token });

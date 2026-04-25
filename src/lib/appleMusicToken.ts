@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import { APPLE_MUSIC_TOKEN_EXPIRY_SECONDS } from "@/constants/app";
 
 function base64url(buf: Buffer | string): string {
   return Buffer.from(buf)
@@ -43,9 +44,8 @@ export function generateAppleMusicToken(): string {
   const pemKey = rawKey.replace(/\\n/g, "\n");
   const header = base64url(JSON.stringify({ alg: "ES256", kid: keyId }));
   const now = Math.floor(Date.now() / 1000);
-  // Token valid for ~6 months
   const payload = base64url(
-    JSON.stringify({ iss: teamId, iat: now, exp: now + 15_777_000 })
+    JSON.stringify({ iss: teamId, iat: now, exp: now + APPLE_MUSIC_TOKEN_EXPIRY_SECONDS })
   );
 
   const signingInput = `${header}.${payload}`;

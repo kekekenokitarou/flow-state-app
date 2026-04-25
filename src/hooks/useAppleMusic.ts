@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { MUSICKIT_LOAD_TIMEOUT_MS, MUSICKIT_PLAYLIST_LIMIT } from "@/constants/app";
 
 export interface SavedPlaylist {
   id: string;
@@ -80,7 +81,7 @@ export function useAppleMusic(): UseAppleMusicReturn {
         resolve();
         return;
       }
-      const timer = setTimeout(() => reject(new Error("MusicKit JS の読み込みがタイムアウトしました")), 10_000);
+      const timer = setTimeout(() => reject(new Error("MusicKit JS の読み込みがタイムアウトしました")), MUSICKIT_LOAD_TIMEOUT_MS);
       window.addEventListener(
         "musickitloaded",
         () => {
@@ -135,7 +136,7 @@ export function useAppleMusic(): UseAppleMusicReturn {
     try {
       const music = window.MusicKit.getInstance();
       const response = await music.api.music("/v1/me/library/playlists", {
-        limit: 100,
+        limit: MUSICKIT_PLAYLIST_LIMIT,
       });
       const items = (response.data?.data ?? []) as {
         id: string;
