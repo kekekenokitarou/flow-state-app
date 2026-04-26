@@ -64,6 +64,8 @@ export function HamburgerMenu() {
         )}
       </AnimatePresence>
 
+      { open && <div className="fixed inset-0 z-10" onClick={handleClose} />}
+
       {/* サイドバー */}
       <AnimatePresence>
         {open && (
