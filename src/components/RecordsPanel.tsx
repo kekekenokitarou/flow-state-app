@@ -5,10 +5,6 @@ import { cn } from "@/lib/utils";
 import { getFlowRecords, type FlowRecordsData, type HeatmapDay } from "@/actions/getFlowRecords";
 import { HEATMAP_LEVEL_THRESHOLDS } from "@/constants/app";
 
-interface RecordsPanelProps {
-  isFlow: boolean;
-}
-
 function formatDuration(seconds: number): string {
   if (seconds === 0) return "—";
   const h = Math.floor(seconds / 3600);
@@ -62,7 +58,15 @@ function buildWeeks(today: Date): (Date | null)[][] {
   return weeks;
 }
 
-function Heatmap({ data, isFlow }: { data: HeatmapDay[]; isFlow: boolean }) {
+const levelColors = [
+  "bg-zinc-100",
+  "bg-orange-100",
+  "bg-orange-300",
+  "bg-orange-500",
+  "bg-orange-600",
+];
+
+function Heatmap({ data }: { data: HeatmapDay[] }) {
   const map = new Map(data.map((d) => [d.date, d.seconds]));
   const today = new Date();
   const weeks = buildWeeks(today);
@@ -78,24 +82,6 @@ function Heatmap({ data, isFlow }: { data: HeatmapDay[]; isFlow: boolean }) {
     }
   });
 
-  const levelColors = isFlow
-    ? [
-        "bg-white/5",
-        "bg-orange-900/60",
-        "bg-orange-700/70",
-        "bg-orange-500/80",
-        "bg-orange-400",
-      ]
-    : [
-        "bg-zinc-100",
-        "bg-orange-100",
-        "bg-orange-300",
-        "bg-orange-500",
-        "bg-orange-600",
-      ];
-
-  const subText = isFlow ? "text-zinc-500" : "text-zinc-400";
-
   return (
     <div className="flex flex-col gap-1 overflow-x-auto">
       {/* Month labels */}
@@ -103,7 +89,7 @@ function Heatmap({ data, isFlow }: { data: HeatmapDay[]; isFlow: boolean }) {
         {weeks.map((_, col) => (
           <div
             key={col}
-            className={cn("w-3 shrink-0 text-[8px] leading-none", subText)}
+            className="w-3 shrink-0 text-[8px] leading-none text-zinc-400"
           >
             {monthLabels.get(col) ?? ""}
           </div>
@@ -117,8 +103,8 @@ function Heatmap({ data, isFlow }: { data: HeatmapDay[]; isFlow: boolean }) {
             <div
               key={label}
               className={cn(
-                "h-3 text-[8px] leading-none flex items-center",
-                i % 2 === 1 ? subText : "opacity-0",
+                "h-3 text-[8px] leading-none flex items-center text-zinc-400",
+                i % 2 === 1 ? "" : "opacity-0",
               )}
             >
               {label}
@@ -154,7 +140,7 @@ function Heatmap({ data, isFlow }: { data: HeatmapDay[]; isFlow: boolean }) {
       </div>
 
       {/* Legend */}
-      <div className={cn("flex items-center gap-1 mt-1 ml-[18px]", subText)}>
+      <div className="flex items-center gap-1 mt-1 ml-[18px] text-zinc-400">
         <span className="text-[8px]">少</span>
         {[0, 1, 2, 3, 4].map((l) => (
           <div
@@ -172,36 +158,13 @@ function Heatmap({ data, isFlow }: { data: HeatmapDay[]; isFlow: boolean }) {
 // Stat Card
 // ───────────────────────────────────────────────
 
-function StatCard({
-  label,
-  value,
-  isFlow,
-}: {
-  label: string;
-  value: string;
-  isFlow: boolean;
-}) {
+function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-1 rounded-xl p-3",
-        isFlow ? "bg-white/5" : "bg-zinc-50",
-      )}
-    >
-      <span
-        className={cn(
-          "text-[10px] font-semibold tracking-widest uppercase",
-          isFlow ? "text-zinc-500" : "text-zinc-400",
-        )}
-      >
+    <div className="flex flex-col gap-1 rounded-xl p-3 bg-zinc-50">
+      <span className="text-[10px] font-semibold tracking-widest uppercase text-zinc-400">
         {label}
       </span>
-      <span
-        className={cn(
-          "text-lg font-bold tabular-nums",
-          isFlow ? "text-white" : "text-zinc-800",
-        )}
-      >
+      <span className="text-lg font-bold tabular-nums text-zinc-800">
         {value}
       </span>
     </div>
@@ -212,7 +175,7 @@ function StatCard({
 // RecordsPanel
 // ───────────────────────────────────────────────
 
-export function RecordsPanel({ isFlow }: RecordsPanelProps) {
+export function RecordsPanel() {
   const [data, setData] = useState<FlowRecordsData | null>(null);
   const [error, setError] = useState(false);
 
@@ -222,57 +185,50 @@ export function RecordsPanel({ isFlow }: RecordsPanelProps) {
       .catch(() => setError(true));
   }, []);
 
-  const subText = isFlow ? "text-zinc-400" : "text-zinc-500";
-  const divider = isFlow ? "border-white/10" : "border-zinc-100";
-  const baseText = isFlow ? "text-white" : "text-zinc-800";
-
   return (
     <div className="flex flex-col gap-5 px-5 py-5">
-      <p className={cn("text-xs font-semibold tracking-widest uppercase", subText)}>
+      <p className="text-xs font-semibold tracking-widest uppercase text-zinc-500">
         記録
       </p>
 
       {error && (
-        <p className={cn("text-xs", subText)}>読み込みに失敗しました</p>
+        <p className="text-xs text-zinc-500">読み込みに失敗しました</p>
       )}
 
       {!data && !error && (
-        <p className={cn("text-xs animate-pulse", subText)}>読み込み中...</p>
+        <p className="text-xs animate-pulse text-zinc-500">読み込み中...</p>
       )}
 
       {data && (
         <>
           {/* 統計 */}
           <div className="grid grid-cols-3 gap-2">
-            <StatCard label="今日" value={formatDuration(data.todaySeconds)} isFlow={isFlow} />
-            <StatCard label="今週" value={formatDuration(data.weekSeconds)} isFlow={isFlow} />
-            <StatCard label="通算" value={formatDuration(data.totalSeconds)} isFlow={isFlow} />
+            <StatCard label="今日" value={formatDuration(data.todaySeconds)} />
+            <StatCard label="今週" value={formatDuration(data.weekSeconds)} />
+            <StatCard label="通算" value={formatDuration(data.totalSeconds)} />
           </div>
 
-          <div className={cn("border-t", divider)} />
+          <div className="border-t border-zinc-100" />
 
           {/* 直近の記録 */}
           <div className="flex flex-col gap-1">
-            <p className={cn("text-xs font-semibold tracking-widest uppercase mb-2", subText)}>
+            <p className="text-xs font-semibold tracking-widest uppercase mb-2 text-zinc-500">
               直近の記録
             </p>
 
             {data.records.length === 0 ? (
-              <p className={cn("text-xs", subText)}>まだ記録がありません</p>
+              <p className="text-xs text-zinc-500">まだ記録がありません</p>
             ) : (
               <ul className="flex flex-col">
                 {data.records.map((r) => (
                   <li
                     key={r.id}
-                    className={cn(
-                      "flex items-center justify-between py-2.5 border-b text-sm",
-                      divider,
-                    )}
+                    className="flex items-center justify-between py-2.5 border-b text-sm border-zinc-100"
                   >
-                    <span className={cn("tabular-nums", subText)}>
+                    <span className="tabular-nums text-zinc-500">
                       {formatDate(r.date)}
                     </span>
-                    <span className={cn("font-semibold tabular-nums", baseText)}>
+                    <span className="font-semibold tabular-nums text-zinc-800">
                       {formatDuration(r.duration)}
                     </span>
                   </li>
@@ -281,14 +237,14 @@ export function RecordsPanel({ isFlow }: RecordsPanelProps) {
             )}
           </div>
 
-          <div className={cn("border-t", divider)} />
+          <div className="border-t border-zinc-100" />
 
           {/* ヒートマップ */}
           <div className="flex flex-col gap-2">
-            <p className={cn("text-xs font-semibold tracking-widest uppercase", subText)}>
+            <p className="text-xs font-semibold tracking-widest uppercase text-zinc-500">
               Activity
             </p>
-            <Heatmap data={data.heatmap} isFlow={isFlow} />
+            <Heatmap data={data.heatmap} />
           </div>
         </>
       )}

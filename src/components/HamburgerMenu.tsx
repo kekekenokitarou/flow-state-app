@@ -2,14 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
 import { ProfileSettings } from "@/components/ProfileSettings";
 import { RecordsPanel } from "@/components/RecordsPanel";
 import { MusicSettings } from "@/components/MusicSettings";
-
-interface HamburgerMenuProps {
-  isFlow: boolean;
-}
 
 type MenuPage = "top" | "profile" | "records" | "music";
 
@@ -19,17 +14,9 @@ const NAV_ITEMS = [
   { id: "profile" as MenuPage, label: "プロフィール設定", icon: "👤" },
 ];
 
-export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
+export function HamburgerMenu() {
   const [open, setOpen] = useState(false);
   const [page, setPage] = useState<MenuPage>("top");
-
-  const panelBg = isFlow
-    ? "bg-neutral-900/95 border-white/10 text-white"
-    : "bg-white border-zinc-200 text-zinc-800";
-
-  const itemHover = isFlow ? "hover:bg-white/5" : "hover:bg-zinc-50";
-  const subText = isFlow ? "text-zinc-400" : "text-zinc-400";
-  const divider = isFlow ? "border-white/10" : "border-zinc-100";
 
   function handleClose() {
     setOpen(false);
@@ -41,10 +28,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
       {/* ハンバーガーボタン */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className={cn(
-          "flex flex-col gap-1.5 p-2 rounded-lg transition",
-          isFlow ? "hover:bg-white/10" : "hover:bg-zinc-100"
-        )}
+        className="flex flex-col gap-1.5 p-2 rounded-lg transition hover:bg-zinc-100"
         aria-label="メニューを開く"
       >
         {[0, 1, 2].map((i) => (
@@ -60,10 +44,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
                 : { rotate: 0, y: 0, opacity: 1 }
             }
             transition={{ duration: 0.2 }}
-            className={cn(
-              "block h-0.5 w-5 rounded-full transition-colors duration-700",
-              isFlow ? "bg-white" : "bg-zinc-800"
-            )}
+            className="block h-0.5 w-5 rounded-full transition-colors duration-700 bg-zinc-800"
           />
         ))}
       </button>
@@ -92,13 +73,10 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -280, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={cn(
-              "fixed top-0 left-0 h-full w-72 z-20 border-r shadow-2xl flex flex-col",
-              panelBg
-            )}
+            className="fixed top-0 left-0 h-full w-72 z-20 border-r shadow-2xl flex flex-col bg-white border-zinc-200 text-zinc-800"
           >
             {/* ヘッダー */}
-            <div className={cn("flex items-center justify-between px-5 py-5 border-b", divider)}>
+            <div className="flex items-center justify-between px-5 py-5 border-b border-zinc-100">
               <AnimatePresence mode="wait">
                 {page === "top" ? (
                   <motion.span
@@ -119,7 +97,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
                     exit={{ opacity: 0, x: -8 }}
                     transition={{ duration: 0.15 }}
                     onClick={() => setPage("top")}
-                    className={cn("flex items-center gap-2 text-sm font-medium", subText)}
+                    className="flex items-center gap-2 text-sm font-medium text-zinc-400"
                   >
                     ← 戻る
                   </motion.button>
@@ -127,7 +105,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
               </AnimatePresence>
               <button
                 onClick={handleClose}
-                className={cn("text-lg leading-none", subText)}
+                className="text-lg leading-none text-zinc-400"
                 aria-label="閉じる"
               >
                 ✕
@@ -150,10 +128,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
                       <button
                         key={item.id}
                         onClick={() => setPage(item.id)}
-                        className={cn(
-                          "flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-left transition",
-                          itemHover
-                        )}
+                        className="flex items-center gap-3 px-5 py-3.5 text-sm font-medium text-left transition hover:bg-zinc-50"
                       >
                         <span className="text-base">{item.icon}</span>
                         {item.label}
@@ -168,7 +143,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
                     exit={{ opacity: 0, x: 16 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <ProfileSettings isFlow={isFlow} />
+                    <ProfileSettings  />
                   </motion.div>
                 ) : page === "music" ? (
                   <motion.div
@@ -178,7 +153,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
                     exit={{ opacity: 0, x: 16 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <MusicSettings isFlow={isFlow} />
+                    <MusicSettings  />
                   </motion.div>
                 ) : (
                   <motion.div
@@ -188,7 +163,7 @@ export function HamburgerMenu({ isFlow }: HamburgerMenuProps) {
                     exit={{ opacity: 0, x: 16 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <RecordsPanel isFlow={isFlow} />
+                    <RecordsPanel  />
                   </motion.div>
                 )}
               </AnimatePresence>

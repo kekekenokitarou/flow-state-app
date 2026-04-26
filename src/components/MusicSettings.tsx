@@ -5,11 +5,7 @@ import { cn } from "@/lib/utils";
 import { useMusicContext } from "@/contexts/MusicContext";
 import type { LibraryPlaylist } from "@/hooks/useAppleMusic";
 
-interface MusicSettingsProps {
-  isFlow: boolean;
-}
-
-export function MusicSettings({ isFlow }: MusicSettingsProps) {
+export function MusicSettings() {
   const {
     status,
     settings,
@@ -21,19 +17,8 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
     updateSettings,
   } = useMusicContext();
 
-  const baseText = isFlow ? "text-white" : "text-zinc-800";
-  const subText = isFlow ? "text-zinc-400" : "text-zinc-500";
-  const divider = isFlow ? "border-white/10" : "border-zinc-100";
-  const btnPrimary = cn(
-    "rounded-lg px-4 py-2 text-sm font-semibold transition disabled:opacity-40",
-    isFlow
-      ? "bg-orange-500/20 text-orange-300 hover:bg-orange-500/30"
-      : "bg-zinc-800 text-white hover:bg-zinc-700"
-  );
-  const rowBase = cn(
-    "flex items-center gap-2 w-full rounded-lg px-3 py-2 text-sm text-left transition",
-    isFlow ? "hover:bg-white/5" : "hover:bg-zinc-50"
-  );
+  const btnPrimary = "rounded-lg px-4 py-2 text-sm font-semibold transition disabled:opacity-40 bg-zinc-800 text-white hover:bg-zinc-700";
+  const rowBase = "flex items-center gap-2 w-full rounded-lg px-3 py-2 text-sm text-left transition hover:bg-zinc-50";
 
   useEffect(() => {
     init();
@@ -65,13 +50,7 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
       <span
         className={cn(
           "flex-shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center",
-          active
-            ? isFlow
-              ? "border-orange-500 bg-orange-500"
-              : "border-zinc-800 bg-zinc-800"
-            : isFlow
-            ? "border-white/30"
-            : "border-zinc-300"
+          active ? "border-zinc-800 bg-zinc-800" : "border-zinc-300"
         )}
       >
         {active && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
@@ -81,7 +60,7 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
 
   return (
     <div className="flex flex-col gap-5 px-5 py-5">
-      <p className={cn("text-xs font-semibold tracking-widest uppercase", subText)}>
+      <p className="text-xs font-semibold tracking-widest uppercase text-zinc-500">
         音楽設定
       </p>
 
@@ -92,11 +71,11 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
       )}
 
       {(status === "idle" || status === "loading") && (
-        <p className={cn("text-sm", subText)}>読み込み中...</p>
+        <p className="text-sm text-zinc-500">読み込み中...</p>
       )}
 
       {status === "error" && (
-        <div className={cn("text-xs leading-relaxed", subText)}>
+        <div className="text-xs leading-relaxed text-zinc-500">
           <p className="font-medium mb-1">Apple Music APIの設定が必要です</p>
           <p>以下の環境変数を設定してください：</p>
           <ul className="mt-1 ml-3 space-y-0.5 list-disc">
@@ -109,7 +88,7 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
 
       {status === "unauthorized" && (
         <div className="flex flex-col gap-2">
-          <p className={cn("text-sm", baseText)}>
+          <p className="text-sm text-zinc-800">
             Apple Musicと接続してフロー中に再生するプレイリストを選べます
           </p>
           <button onClick={authorize} className={btnPrimary}>
@@ -122,18 +101,14 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
         <>
           {/* Active playlist selector */}
           <div className="flex flex-col gap-1.5">
-            <p className={cn("text-sm font-medium", baseText)}>フロー中に再生</p>
+            <p className="text-sm font-medium text-zinc-800">フロー中に再生</p>
 
             <button
               onClick={() => handleSetActive(null)}
-              className={cn(
-                rowBase,
-                !settings.enabled &&
-                  (isFlow ? "ring-1 ring-orange-500/30" : "ring-1 ring-zinc-300")
-              )}
+              className={cn(rowBase, !settings.enabled && "ring-1 ring-zinc-300")}
             >
               <RadioDot active={!settings.enabled} />
-              <span className={cn("text-sm", subText)}>音楽を再生しない</span>
+              <span className="text-sm text-zinc-500">音楽を再生しない</span>
             </button>
 
             {settings.savedPlaylists.map((pl) => {
@@ -143,27 +118,16 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
                 <div key={pl.id} className="flex items-center gap-1">
                   <button
                     onClick={() => handleSetActive(pl.id)}
-                    className={cn(
-                      rowBase,
-                      "flex-1",
-                      isActive &&
-                        (isFlow
-                          ? "ring-1 ring-orange-500/30"
-                          : "ring-1 ring-zinc-300")
-                    )}
+                    className={cn(rowBase, "flex-1", isActive && "ring-1 ring-zinc-300")}
                   >
                     <RadioDot active={isActive} />
-                    <span className={cn("text-sm truncate", baseText)}>
+                    <span className="text-sm truncate text-zinc-800">
                       {pl.name}
                     </span>
                   </button>
                   <button
                     onClick={() => handleRemovePlaylist(pl.id)}
-                    className={cn(
-                      "text-xs px-2 py-1.5 rounded",
-                      subText,
-                      isFlow ? "hover:bg-white/10" : "hover:bg-zinc-100"
-                    )}
+                    className="text-xs px-2 py-1.5 rounded text-zinc-500 hover:bg-zinc-100"
                     aria-label={`${pl.name}を削除`}
                   >
                     ✕
@@ -173,15 +137,15 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
             })}
           </div>
 
-          <div className={cn("border-t", divider)} />
+          <div className="border-t border-zinc-100" />
 
           {/* Library playlists */}
           <div className="flex flex-col gap-1.5">
-            <p className={cn("text-sm font-medium", baseText)}>
+            <p className="text-sm font-medium text-zinc-800">
               ライブラリから追加
             </p>
             {libraryPlaylists.length === 0 ? (
-              <p className={cn("text-xs", subText)}>プレイリストが見つかりません</p>
+              <p className="text-xs text-zinc-500">プレイリストが見つかりません</p>
             ) : (
               <div className="flex flex-col gap-0.5 max-h-52 overflow-y-auto">
                 {libraryPlaylists
@@ -194,15 +158,10 @@ export function MusicSettings({ isFlow }: MusicSettingsProps) {
                       onClick={() => handleAddPlaylist(pl)}
                       className={cn(rowBase, "justify-between")}
                     >
-                      <span className={cn("text-sm truncate flex-1", baseText)}>
+                      <span className="text-sm truncate flex-1 text-zinc-800">
                         {pl.name}
                       </span>
-                      <span
-                        className={cn(
-                          "text-xs flex-shrink-0 ml-2",
-                          isFlow ? "text-orange-400" : "text-zinc-500"
-                        )}
-                      >
+                      <span className="text-xs flex-shrink-0 ml-2 text-zinc-500">
                         + 追加
                       </span>
                     </button>

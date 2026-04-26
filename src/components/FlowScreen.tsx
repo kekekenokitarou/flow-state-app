@@ -60,7 +60,7 @@ function FlowScreenInner({ name, initial, image }: FlowScreenProps) {
       {/* Hamburger menu — top left, hidden in flow state */}
       {!isFlow && (
         <div className="absolute top-5 left-5 z-10">
-          <HamburgerMenu isFlow={isFlow} />
+          <HamburgerMenu />
         </div>
       )}
 
