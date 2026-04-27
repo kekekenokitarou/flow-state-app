@@ -2,10 +2,22 @@
 
 import { signOut } from "next-auth/react"
 
+async function handleLogout() {
+  if (typeof window !== "undefined") {
+    try {
+      if (window.MusicKit) {
+        await window.MusicKit.getInstance().unauthorize();
+      }
+    } catch {}
+    localStorage.removeItem("flow-app:music-settings");
+  }
+  signOut({ callbackUrl: "/" });
+}
+
 export function LogoutButton({ isFlow }: { isFlow: boolean }) {
   return (
     <button
-      onClick={() => signOut({ callbackUrl: "/" })}
+      onClick={handleLogout}
       aria-label="ログアウト"
       className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors duration-700 ${
         isFlow
