@@ -50,20 +50,6 @@ export function HamburgerMenu() {
       </button>
 
       {/* オーバーレイ */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            key="overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-10"
-            onClick={handleClose}
-          />
-        )}
-      </AnimatePresence>
-
       { open && <div className="fixed inset-0 z-10" onClick={handleClose} />}
 
       {/* サイドバー */}
@@ -145,7 +131,7 @@ export function HamburgerMenu() {
                     exit={{ opacity: 0, x: 16 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <ProfileSettings  />
+                    <ProfileSettings/>
                   </motion.div>
                 ) : page === "music" ? (
                   <motion.div
@@ -155,7 +141,7 @@ export function HamburgerMenu() {
                     exit={{ opacity: 0, x: 16 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <MusicSettings  />
+                    <MusicSettings/>
                   </motion.div>
                 ) : (
                   <motion.div
@@ -165,7 +151,7 @@ export function HamburgerMenu() {
                     exit={{ opacity: 0, x: 16 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <RecordsPanel  />
+                    <RecordsPanel/>
                   </motion.div>
                 )}
               </AnimatePresence>

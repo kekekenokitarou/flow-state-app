@@ -64,11 +64,13 @@ function FlowScreenInner({ name, initial, image }: FlowScreenProps) {
         </div>
       )}
 
-      {/* Profile & Logout — top right */}
-      <div className="absolute top-5 right-5 z-10 flex items-center gap-3">
-        <LogoutButton isFlow={isFlow} />
-        <ProfileCard isFlow={isFlow} name={name} initial={initial} image={image} />
-      </div>
+      {/* Profile & Logout — top right, hidden in flow state */}
+      {!isFlow && (
+        <div className="absolute top-5 right-5 z-10 flex items-center gap-3">
+          <LogoutButton isFlow={isFlow} />
+          <ProfileCard isFlow={isFlow} name={name} initial={initial} image={image} />
+        </div>
+      )}
 
       {/* Flame button — center */}
       <FlameButton isFlow={isFlow} onClick={handleToggle} />
